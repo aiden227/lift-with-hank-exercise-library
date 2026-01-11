@@ -274,14 +274,23 @@ export default function App() {
 
                     <div className="hidden md:flex items-center gap-6">
                         <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={18} />
                             <input
                                 type="text"
                                 placeholder="Search exercise..."
-                                className="pl-10 pr-4 py-2 bg-gray-100 rounded-full text-sm text-[#333333] focus:outline-none focus:ring-2 focus:ring-[#9E182B] transition-all w-64"
+                                className="pl-10 pr-10 py-2 bg-gray-100 rounded-full text-sm text-[#333333] focus:outline-none focus:ring-2 focus:ring-[#9E182B] transition-all w-64"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                             />
+                            {searchQuery && (
+                                <button
+                                    onClick={() => setSearchQuery('')}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                                    aria-label="Clear search"
+                                >
+                                    <X size={16} />
+                                </button>
+                            )}
                         </div>
                         <button className="bg-[#9E182B] text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-[#851323] transition-colors shadow-lg shadow-[#9E182B]/20">
                             GET STARTED
@@ -306,14 +315,46 @@ export default function App() {
                     </div>
                     <div className="space-y-6">
                         <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={18} />
                             <input
                                 type="text"
                                 placeholder="Search exercise..."
-                                className="pl-10 pr-4 py-3 bg-gray-100 rounded-lg text-sm w-full"
+                                className="pl-10 pr-10 py-3 bg-gray-100 rounded-lg text-[16px] w-full focus:outline-none focus:ring-2 focus:ring-[#9E182B] transition-all"
+                                style={{ fontSize: '16px' }}
                                 value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onChange={(e) => {
+                                    const newQuery = e.target.value;
+                                    setSearchQuery(newQuery);
+                                    // Close menu and show results when user types
+                                    if (newQuery.trim()) {
+                                        setMobileMenuOpen(false);
+                                        // Small delay to let menu close and state update, then scroll to content
+                                        setTimeout(() => {
+                                            // Find first matching category with the new query
+                                            const matchingData = EXERCISE_DATA.map(cat => ({
+                                                ...cat,
+                                                exercises: cat.exercises.filter(ex =>
+                                                    ex.title.toLowerCase().includes(newQuery.toLowerCase()) ||
+                                                    ex.equipment.toLowerCase().includes(newQuery.toLowerCase())
+                                                )
+                                            })).filter(cat => cat.exercises.length > 0);
+
+                                            if (matchingData[0]) {
+                                                scrollToSection(matchingData[0].id);
+                                            }
+                                        }, 150);
+                                    }
+                                }}
                             />
+                            {searchQuery && (
+                                <button
+                                    onClick={() => setSearchQuery('')}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1"
+                                    aria-label="Clear search"
+                                >
+                                    <X size={18} />
+                                </button>
+                            )}
                         </div>
                         <nav className="space-y-4">
                             {EXERCISE_DATA.map((cat) => (
