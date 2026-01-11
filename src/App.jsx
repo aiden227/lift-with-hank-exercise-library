@@ -322,20 +322,19 @@ export default function App() {
                                 className="pl-10 pr-10 py-3 bg-gray-100 rounded-lg text-[16px] w-full focus:outline-none focus:ring-2 focus:ring-[#9E182B] transition-all"
                                 style={{ fontSize: '16px' }}
                                 value={searchQuery}
-                                onChange={(e) => {
-                                    const newQuery = e.target.value;
-                                    setSearchQuery(newQuery);
-                                    // Close menu and show results when user types
-                                    if (newQuery.trim()) {
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && searchQuery.trim()) {
+                                        // Close menu and show results when user presses Enter
                                         setMobileMenuOpen(false);
-                                        // Small delay to let menu close and state update, then scroll to content
+                                        // Small delay to let menu close, then scroll to content
                                         setTimeout(() => {
-                                            // Find first matching category with the new query
+                                            // Find first matching category
                                             const matchingData = EXERCISE_DATA.map(cat => ({
                                                 ...cat,
                                                 exercises: cat.exercises.filter(ex =>
-                                                    ex.title.toLowerCase().includes(newQuery.toLowerCase()) ||
-                                                    ex.equipment.toLowerCase().includes(newQuery.toLowerCase())
+                                                    ex.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                                    ex.equipment.toLowerCase().includes(searchQuery.toLowerCase())
                                                 )
                                             })).filter(cat => cat.exercises.length > 0);
 
