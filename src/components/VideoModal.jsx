@@ -60,9 +60,7 @@ export const VideoModal = ({ exercise, onClose }) => {
             <div className="space-y-3 sm:space-y-4">
               <h4 className="text-base sm:text-lg font-bold text-[#333333]">Mechanics Breakdown</h4>
               <p className="text-sm sm:text-base text-[#555555] leading-relaxed">
-                In this video, we break down the {exercise.title.toLowerCase()}. We'll focus on the setup,
-                the eccentric (lowering) phase, and the concentric (lifting) phase. Pay special attention
-                to the cue markers at 0:45 regarding spine neutrality.
+                {exercise.mechanics || "Mechanics breakdown coming soon."}
               </p>
 
               <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-white rounded-xl border border-gray-200">
@@ -70,17 +68,16 @@ export const VideoModal = ({ exercise, onClose }) => {
                   <Info size={14} className="sm:w-4 sm:h-4" /> Hank's Pro Tip
                 </h5>
                 <p className="text-xs sm:text-sm text-gray-600 italic leading-relaxed">
-                  "Don't rush the movement. Control the weight, don't let the weight control you.
-                  Imagine you are pulling yourself down to the bar, rather than lowering it."
+                  "{exercise.proTip || "Keep training hard!"}"
                 </p>
               </div>
             </div>
+          </div>
 
-            <div className="mt-6 sm:mt-8 flex justify-stretch sm:justify-end">
-              <button className="w-full sm:w-auto px-6 py-3 bg-[#9E182B] text-white font-bold text-sm sm:text-base rounded-lg hover:bg-[#851323] active:scale-95 transition-all shadow-md shadow-red-900/10">
-                Mark as Watched
-              </button>
-            </div>
+          <div className="mt-6 sm:mt-8 flex justify-stretch sm:justify-end">
+            <button className="w-full sm:w-auto px-6 py-3 bg-[#9E182B] text-white font-bold text-sm sm:text-base rounded-lg hover:bg-[#851323] active:scale-95 transition-all shadow-md shadow-red-900/10">
+              Mark as Watched
+            </button>
           </div>
         </div>
       </div>
