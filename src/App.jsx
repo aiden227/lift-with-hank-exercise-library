@@ -77,67 +77,80 @@ const EXERCISE_DATA = [
 // --- Components ---
 
 const VideoModal = ({ exercise, onClose }) => {
+    useEffect(() => {
+        // Prevent body scroll when modal is open (important for mobile)
+        document.body.style.overflow = 'hidden';
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, []);
+
     if (!exercise) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="bg-white w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl relative">
-                {/* Header */}
-                <div className="flex justify-between items-center p-4 border-b border-gray-100">
-                    <h3 className="text-xl font-bold text-[#9E182B] font-poppins">{exercise.title}</h3>
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+            {/* Mobile: slide up from bottom, Desktop: centered modal */}
+            <div className="bg-white w-full sm:w-[95%] sm:max-w-4xl sm:rounded-2xl rounded-t-3xl overflow-hidden shadow-2xl relative max-h-[95vh] sm:max-h-[90vh] flex flex-col animate-in slide-in-from-bottom sm:slide-in-from-bottom-0 duration-300">
+                {/* Header - Sticky on mobile */}
+                <div className="flex justify-between items-center p-4 sm:p-5 border-b border-gray-100 bg-white sticky top-0 z-10 flex-shrink-0">
+                    <h3 className="text-lg sm:text-xl font-bold text-[#9E182B] font-poppins pr-2 line-clamp-2">{exercise.title}</h3>
                     <button
                         onClick={onClose}
-                        className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                        className="p-2 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0"
+                        aria-label="Close modal"
                     >
                         <X size={24} className="text-gray-500" />
                     </button>
                 </div>
 
-                {/* Video Placeholder */}
-                <div className="aspect-video bg-black flex items-center justify-center relative group cursor-pointer">
-                    <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1470&auto=format&fit=crop')] bg-cover bg-center opacity-60"></div>
-                    <button className="relative z-10 w-20 h-20 bg-[#9E182B] rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform duration-300">
-                        <Play fill="white" className="text-white ml-2" size={32} />
-                    </button>
-                    <span className="absolute bottom-4 right-4 bg-black/70 text-white px-2 py-1 text-sm rounded font-medium">
-                        {exercise.duration}
-                    </span>
-                </div>
-
-                {/* Content */}
-                <div className="p-6 md:p-8 bg-[#F9FAFA]">
-                    <div className="flex flex-wrap gap-3 mb-6">
-                        <span className="px-3 py-1 bg-[#F2AFBC]/30 text-[#9E182B] text-sm font-semibold rounded-full border border-[#F2AFBC]">
-                            {exercise.level}
-                        </span>
-                        <span className="px-3 py-1 bg-gray-200 text-gray-700 text-sm font-semibold rounded-full">
-                            {exercise.equipment}
-                        </span>
-                    </div>
-
-                    <div className="space-y-4">
-                        <h4 className="text-lg font-bold text-[#333333]">Mechanics Breakdown</h4>
-                        <p className="text-[#555555] leading-relaxed">
-                            In this video, we break down the {exercise.title.toLowerCase()}. We'll focus on the setup,
-                            the eccentric (lowering) phase, and the concentric (lifting) phase. Pay special attention
-                            to the cue markers at 0:45 regarding spine neutrality.
-                        </p>
-
-                        <div className="mt-6 p-4 bg-white rounded-xl border border-gray-200">
-                            <h5 className="text-sm font-bold text-[#9E182B] uppercase tracking-wide mb-2 flex items-center gap-2">
-                                <Info size={16} /> Hank's Pro Tip
-                            </h5>
-                            <p className="text-sm text-gray-600 italic">
-                                "Don't rush the movement. Control the weight, don't let the weight control you.
-                                Imagine you are pulling yourself down to the bar, rather than lowering it."
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="mt-8 flex justify-end">
-                        <button className="px-6 py-3 bg-[#9E182B] text-white font-bold rounded-lg hover:bg-[#851323] transition-colors shadow-md shadow-red-900/10">
-                            Mark as Watched
+                {/* Scrollable Content */}
+                <div className="overflow-y-auto flex-1">
+                    {/* Video Placeholder */}
+                    <div className="aspect-video bg-black flex items-center justify-center relative group cursor-pointer">
+                        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1470&auto=format&fit=crop')] bg-cover bg-center opacity-60"></div>
+                        <button className="relative z-10 w-16 h-16 sm:w-20 sm:h-20 bg-[#9E182B] rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-110 active:scale-95 transition-transform duration-300">
+                            <Play fill="white" className="text-white ml-1" size={28} />
                         </button>
+                        <span className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 bg-black/70 text-white px-2 py-1 text-xs sm:text-sm rounded font-medium">
+                            {exercise.duration}
+                        </span>
+                    </div>
+
+                    {/* Content */}
+                    <div className="p-4 sm:p-6 md:p-8 bg-[#F9FAFA]">
+                        <div className="flex flex-wrap gap-2 sm:gap-3 mb-4 sm:mb-6">
+                            <span className="px-3 py-1 bg-[#F2AFBC]/30 text-[#9E182B] text-xs sm:text-sm font-semibold rounded-full border border-[#F2AFBC]">
+                                {exercise.level}
+                            </span>
+                            <span className="px-3 py-1 bg-gray-200 text-gray-700 text-xs sm:text-sm font-semibold rounded-full">
+                                {exercise.equipment}
+                            </span>
+                        </div>
+
+                        <div className="space-y-3 sm:space-y-4">
+                            <h4 className="text-base sm:text-lg font-bold text-[#333333]">Mechanics Breakdown</h4>
+                            <p className="text-sm sm:text-base text-[#555555] leading-relaxed">
+                                In this video, we break down the {exercise.title.toLowerCase()}. We'll focus on the setup,
+                                the eccentric (lowering) phase, and the concentric (lifting) phase. Pay special attention
+                                to the cue markers at 0:45 regarding spine neutrality.
+                            </p>
+
+                            <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-white rounded-xl border border-gray-200">
+                                <h5 className="text-xs sm:text-sm font-bold text-[#9E182B] uppercase tracking-wide mb-2 flex items-center gap-2">
+                                    <Info size={14} className="sm:w-4 sm:h-4" /> Hank's Pro Tip
+                                </h5>
+                                <p className="text-xs sm:text-sm text-gray-600 italic leading-relaxed">
+                                    "Don't rush the movement. Control the weight, don't let the weight control you.
+                                    Imagine you are pulling yourself down to the bar, rather than lowering it."
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="mt-6 sm:mt-8 flex justify-stretch sm:justify-end">
+                            <button className="w-full sm:w-auto px-6 py-3 bg-[#9E182B] text-white font-bold text-sm sm:text-base rounded-lg hover:bg-[#851323] active:scale-95 transition-all shadow-md shadow-red-900/10">
+                                Mark as Watched
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -148,19 +161,19 @@ const VideoModal = ({ exercise, onClose }) => {
 const ExerciseCard = ({ exercise, onSelect }) => (
     <div
         onClick={() => onSelect(exercise)}
-        className="group bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl hover:border-[#F2AFBC] transition-all duration-300 cursor-pointer flex flex-col h-full"
+        className="group bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl hover:border-[#F2AFBC] active:scale-[0.98] transition-all duration-300 cursor-pointer flex flex-col h-full"
     >
         {/* Thumbnail */}
         <div className="relative aspect-[16/9] bg-gray-100 overflow-hidden">
             {/* Abstract Gradient Placeholder for Thumbnail */}
             <div className={`absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 group-hover:scale-105 transition-transform duration-700`}></div>
-            <div className="absolute inset-0 flex items-center justify-center opacity-30 text-white font-black text-4xl tracking-tighter">
+            <div className="absolute inset-0 flex items-center justify-center opacity-30 text-white font-black text-3xl sm:text-4xl tracking-tighter">
                 {exercise.thumb}
             </div>
 
             {/* Overlay */}
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
-                <div className="w-12 h-12 bg-white/90 rounded-full flex items-center justify-center opacity-0 transform translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-lg">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 bg-white/90 rounded-full flex items-center justify-center opacity-0 transform translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-lg">
                     <Play fill="#9E182B" className="text-[#9E182B] ml-1" size={20} />
                 </div>
             </div>
@@ -171,20 +184,20 @@ const ExerciseCard = ({ exercise, onSelect }) => (
         </div>
 
         {/* Content */}
-        <div className="p-5 flex-1 flex flex-col">
+        <div className="p-4 sm:p-5 flex-1 flex flex-col">
             <div className="flex justify-between items-start mb-2">
-                <h3 className="font-bold text-[#333333] group-hover:text-[#9E182B] transition-colors line-clamp-1">
+                <h3 className="font-bold text-sm sm:text-base text-[#333333] group-hover:text-[#9E182B] transition-colors line-clamp-2">
                     {exercise.title}
                 </h3>
             </div>
 
-            <div className="flex flex-wrap gap-2 mt-1 mb-4">
+            <div className="flex flex-wrap gap-2 mt-1 mb-3 sm:mb-4">
                 <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
                     {exercise.equipment}
                 </span>
             </div>
 
-            <div className="mt-auto pt-4 border-t border-gray-50 flex items-center text-[#9E182B] text-sm font-semibold group-hover:translate-x-1 transition-transform duration-300">
+            <div className="mt-auto pt-3 sm:pt-4 border-t border-gray-50 flex items-center text-[#9E182B] text-xs sm:text-sm font-semibold group-hover:translate-x-1 transition-transform duration-300">
                 Watch Tutorial <ChevronRight size={16} />
             </div>
         </div>
@@ -318,20 +331,20 @@ export default function App() {
             )}
 
             {/* --- Hero Section --- */}
-            <div className="bg-[#333333] text-white py-16 md:py-24 relative overflow-hidden">
+            <div className="bg-[#333333] text-white py-12 sm:py-16 md:py-24 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-1/2 h-full bg-[#9E182B] opacity-10 skew-x-12 transform translate-x-1/4"></div>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div className="max-w-2xl">
-                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-poppins leading-tight mb-6">
+                        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-poppins leading-tight mb-4 sm:mb-6">
                             Master Your <span className="text-[#F2AFBC]">Mechanics.</span>
                         </h1>
-                        <p className="text-lg md:text-xl text-gray-300 leading-relaxed mb-8">
+                        <p className="text-base sm:text-lg md:text-xl text-gray-300 leading-relaxed mb-6 sm:mb-8">
                             "Private Training For People Who Hate Gyms, but still want to look like they go to one."
-                            <br /><br />
-                            Welcome to the vault. Search below to find detailed breakdowns of every lift in your program.
+                            <br className="hidden sm:block" /><br className="hidden sm:block" />
+                            <span className="block mt-3 sm:mt-0">Welcome to the vault. Search below to find detailed breakdowns of every lift in your program.</span>
                         </p>
-                        <div className="flex gap-4">
-                            <button onClick={() => scrollToSection('legs')} className="bg-[#F2AFBC] text-[#9E182B] px-8 py-3 rounded font-bold hover:bg-white transition-colors">
+                        <div className="flex gap-3 sm:gap-4">
+                            <button onClick={() => scrollToSection('legs')} className="bg-[#F2AFBC] text-[#9E182B] px-6 sm:px-8 py-2.5 sm:py-3 rounded font-bold hover:bg-white active:scale-95 transition-all text-sm sm:text-base">
                                 Browse Library
                             </button>
                         </div>
@@ -363,33 +376,33 @@ export default function App() {
             </div>
 
             {/* --- Main Content --- */}
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-20">
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-12 sm:space-y-20">
 
                 {filteredData.length === 0 && (
-                    <div className="text-center py-20">
-                        <Dumbbell size={48} className="mx-auto text-gray-300 mb-4" />
-                        <h3 className="text-xl font-bold text-gray-400">No exercises found</h3>
-                        <p className="text-gray-400">Try adjusting your search terms.</p>
+                    <div className="text-center py-12 sm:py-20">
+                        <Dumbbell size={40} className="sm:w-12 sm:h-12 mx-auto text-gray-300 mb-4" />
+                        <h3 className="text-lg sm:text-xl font-bold text-gray-400">No exercises found</h3>
+                        <p className="text-sm sm:text-base text-gray-400">Try adjusting your search terms.</p>
                     </div>
                 )}
 
                 {filteredData.map((category) => (
                     <section key={category.id} id={category.id} className="scroll-mt-48">
-                        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 pb-4 border-b border-gray-200">
+                        <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 sm:mb-8 pb-3 sm:pb-4 border-b border-gray-200">
                             <div>
-                                <h2 className="text-3xl font-bold text-[#333333] font-poppins flex items-center gap-3">
+                                <h2 className="text-2xl sm:text-3xl font-bold text-[#333333] font-poppins flex items-center gap-3">
                                     {category.category}
                                 </h2>
-                                <p className="text-[#555555] mt-2 max-w-xl">
+                                <p className="text-sm sm:text-base text-[#555555] mt-2 max-w-xl">
                                     {category.description}
                                 </p>
                             </div>
-                            <div className="hidden md:block text-sm font-semibold text-[#9E182B]">
-                                {category.exercises.length} Videos
+                            <div className="mt-2 md:mt-0 text-xs sm:text-sm font-semibold text-[#9E182B]">
+                                {category.exercises.length} Video{category.exercises.length !== 1 ? 's' : ''}
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
                             {category.exercises.map((exercise) => (
                                 <ExerciseCard
                                     key={exercise.id}
