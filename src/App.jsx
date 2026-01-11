@@ -7,6 +7,7 @@ import Hero from './components/Hero';
 import MuscleGroupNav from './components/MuscleGroupNav';
 import ExerciseCard from './components/ExerciseCard';
 import Footer from './components/Footer';
+import LoginScreen from './components/LoginScreen';
 import { VideoModal } from './components/VideoModal'; // Note: VideoModal uses named export
 import { ArrowUp, Dumbbell } from 'lucide-react';
 
@@ -15,6 +16,22 @@ export default function App() {
     const [selectedExercise, setSelectedExercise] = useState(null);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
+    const [isAuthenticated, setIsAuthenticated] = useState(() => {
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem('lift_auth') === 'true';
+        }
+        return false;
+    });
+
+    const handleLogin = (password, callback) => {
+        if (password === 'letslift!!!') {
+            localStorage.setItem('lift_auth', 'true');
+            setIsAuthenticated(true);
+            callback(true);
+        } else {
+            callback(false);
+        }
+    };
 
     const scrollToSection = (id) => {
         const element = document.getElementById(id);
@@ -41,6 +58,10 @@ export default function App() {
             ex.equipment.toLowerCase().includes(searchQuery.toLowerCase())
         )
     })).filter(cat => cat.exercises.length > 0);
+
+    if (!isAuthenticated) {
+        return <LoginScreen onLogin={handleLogin} />;
+    }
 
     return (
         <div className="min-h-screen bg-[#F9FAFA] font-sans selection:bg-[#F2AFBC] selection:text-[#9E182B]">
