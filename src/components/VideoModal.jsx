@@ -74,11 +74,7 @@ export const VideoModal = ({ exercise, onClose }) => {
             </div>
           </div>
 
-          <div className="mt-6 sm:mt-8 flex justify-stretch sm:justify-end">
-            <button className="w-full sm:w-auto px-6 py-3 bg-[#9E182B] text-white font-bold text-sm sm:text-base rounded-lg hover:bg-[#851323] active:scale-95 transition-all shadow-md shadow-red-900/10">
-              Mark as Watched
-            </button>
-          </div>
+
         </div>
       </div>
     </div>
